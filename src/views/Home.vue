@@ -1,18 +1,33 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <app-page title="Список заявок">
+    <template #header>
+      <button class="btn primary" @click="modal = true">Создать</button>
+    </template>
+    <request-table :requests="[requests]"></request-table>
+    <teleport to="body">
+      <app-modal v-if="modal" title="Создать заявку" @close="modal = false">
+        <request-modal @created ="modal = false"></request-modal>
+      </app-modal>
+    </teleport>
+  </app-page>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import {ref, computed} from 'vue'
+import RequestTable from '../components/request/RequestTable'
+import RequestModal from '../components/request/RequestModal'
+import AppPage from '../components/ui/AppPage'
+import AppModal from '../components/ui/AppModal'
+import { useStore } from 'vuex'
 export default {
-  name: 'Home',
-  components: {
-    HelloWorld
-  }
+  setup() {
+    const store = useStore()
+    const modal = ref(false)
+    const requests = computed(() => store.getters['request/requests'])
+    return {
+      modal, requests
+    }
+  },
+  components: {AppPage, RequestTable, AppModal, RequestModal}
 }
 </script>
