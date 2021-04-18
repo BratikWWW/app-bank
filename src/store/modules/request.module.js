@@ -59,7 +59,37 @@ export default {
                     type: 'danger'
                 }, {root: true})
             }
-        }
+        },
+        async remove({ commit, dispatch }, id) {
+            try {
+                const token = store.getters['auth/token']
+                await axios.delete(`./requests/${id}.json?auth=${token}`)
+                dispatch('setMessage', {
+                    value: 'Заявка удалена',
+                    type: 'danger'
+                }, {root: true})
+            } catch(e) {
+                dispatch('setMessage', {
+                    value: e.message,
+                    type: 'danger'
+                }, {root: true})
+            }
+        },
+        async update({ dispatch }, request) {
+            try {
+                const token = store.getters['auth/token']
+                axios.put(`./requests/${request.id}.json?auth=${token}`, request)
+                dispatch('setMessage', {
+                    value: 'Заявка обновлена',
+                    type: 'primary'
+                }, {root: true})
+            } catch(e) {
+                dispatch('setMessage', {
+                    value: e.message,
+                    type: 'danger'
+                }, {root: true})
+            }
+        },
     },
     getters: {
         requests(state) {
